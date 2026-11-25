@@ -518,8 +518,8 @@ public:
     static constexpr const char FEATURE_PROPERTY_VIDEO_ENCODER_MAX_LTR_FRAME_COUNT[] =
         "feature_property_video_encoder_max_ltr_frame_count"; ///< int32_t, the key for querying the maximum long
                                                             ///< term reference count
-    static constexpr const char FEATURE_PROPERTY_VIDEO_ENCODE_MAX_ROI_COUNT[] =
-        "feature_property_video_encode_max_roi_count"; ///< int32_t, the key for querying the maximum ROI count
+    static constexpr const char FEATURE_PROPERTY_VIDEO_ENCODER_MAX_ROI_COUNT[] =
+        "feature_property_video_encoder_max_roi_count"; ///< int32_t, the key for querying the maximum ROI count
                                                        ///< supported by the video encoder. It is only used in
                                                        ///< capability query. 0 means ROI is not supported.
 
