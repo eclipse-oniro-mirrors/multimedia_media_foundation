@@ -520,8 +520,9 @@ public:
                                                             ///< term reference count
     static constexpr const char FEATURE_PROPERTY_VIDEO_ENCODER_MAX_ROI_COUNT[] =
         "feature_property_video_encoder_max_roi_count"; ///< int32_t, the key for querying the maximum ROI count
-                                                       ///< supported by the video encoder. It is only used in
-                                                       ///< capability query. 0 means ROI is not supported.
+                                                       ///< supported by the video encoder. It is only used for
+                                                       ///< querying. The return value is 0 if ROI encoding is
+                                                       ///< not supported.
 
     /* -------------------- AVCodec tag -------------------- */
     // Pid is int32_t and process name is string, to describe AVCodec's forward caller info.
