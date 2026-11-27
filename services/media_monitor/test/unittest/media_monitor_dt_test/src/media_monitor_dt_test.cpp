@@ -2052,6 +2052,7 @@ HWTEST(MediaMonitorDtTest, MediaMonitorService_WriteLogMsg_FaultUidRejected_001,
 
     int32_t callingUid = IPCSkeleton::GetCallingUid();
     bool isAudio = service.VerifyIsAudio();
+    bool hasSystemPermission = service.VerifySystemPermission();
     int32_t forgedUid = callingUid + 1;
     auto bean = MakeEvent(UNIFIED_FAULT_CODE, FAULT_EVENT);
     bean->Add("ERROR_UID", forgedUid);
@@ -2059,7 +2060,11 @@ HWTEST(MediaMonitorDtTest, MediaMonitorService_WriteLogMsg_FaultUidRejected_001,
     bean->Add("ERROR_REASON", "forge_test");
 
     auto ret = service.WriteLogMsg(*bean);
-    if (isAudio) {
+    if (!hasSystemPermission) {
+        EXPECT_EQ(ret, ERR_SYSTEM_PERMISSION_DENIED);
+        EXPECT_EQ(service.signal_->messageQueue_.size(), 0U);
+        EXPECT_EQ(aggregate.GetUnifiedFaultCodeRecords().size(), 0U);
+    } else if (isAudio) {
         EXPECT_EQ(ret, SUCCESS);
         EXPECT_EQ(service.signal_->messageQueue_.size(), 1U);
     } else {
@@ -2082,6 +2087,13 @@ HWTEST(MediaMonitorDtTest, MediaMonitorService_WriteLogMsg_FaultUidAccepted_001,
     bean->Add("ERROR_UID", callingUid);
     bean->Add("ERROR_CODE", 0x00000002);
     bean->Add("ERROR_REASON", "self_uid");
+
+    if (!service.VerifySystemPermission()) {
+        EXPECT_EQ(service.WriteLogMsg(*bean), ERR_SYSTEM_PERMISSION_DENIED);
+        EXPECT_EQ(service.signal_->messageQueue_.size(), 0U);
+        EXPECT_EQ(aggregate.GetUnifiedFaultCodeRecords().size(), 0U);
+        return;
+    }
 
     EXPECT_EQ(service.WriteLogMsg(*bean), SUCCESS);
     ASSERT_EQ(service.signal_->messageQueue_.size(), 1U);
